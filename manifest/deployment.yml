@@ -25,6 +25,18 @@ spec:
             memory: "1Gi"
             cpu: "1"
         env:
+        - name: MOODLE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: moodle-secret
+              key: MOODLE_USERNAME
+        - name: MOODLE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: moodle-secret
+              key: MOODLE_PASSWORD
+        - name: MOODLE_SITE_NAME
+          value: "Learning Management System"
         - name: MOODLE_DATABASE_TYPE
           value: "mariadb"
         - name: MOODLE_DATABASE_HOST
@@ -32,9 +44,13 @@ spec:
         - name: MOODLE_DATABASE_NAME
           value: "bitnami_moodle"
         - name: MOODLE_DATABASE_USER
-          value: "moodle"
+          secretKeyRef:
+              name: moodle-secret
+              key: MOODLE_DATABASE_USER
         - name: MOODLE_DATABASE_PASSWORD
-          value: "moodle"
+          secretKeyRef:
+              name: moodle-secret
+              key: MOODLE_DATABASE_PASSWORD
         - name: MOODLE_DATABASE_PORT_NUMBER
           value: "3306"
         - name: APACHE_HTTPS_PORT_NUMBER
@@ -45,8 +61,7 @@ spec:
           value: "false"
         - name: MOODLE_SKIP_BOOTSTRAP
           value: "no"
-        - name: MOODLE_USERNAME
-          value: "admin"
+        
         volumeMounts:
         - name: moodle-data
           mountPath: /bitnami/moodle
@@ -83,11 +98,17 @@ spec:
         - name: MARIADB_DATABASE
           value: "bitnami_moodle"
         - name: MARIADB_USER
-          value: "moodle"
+          secretKeyRef:
+              name: mariadb-secret
+              key: MARIADB_USER
         - name: MARIADB_PASSWORD
-          value: "moodle"
+          secretKeyRef:
+              name: mariadb-secret
+              key: MARIADB_PASSWORD
         - name: MARIADB_ROOT_PASSWORD
-          value: "moodle"
+          secretKeyRef:
+              name: mariadb-secret
+              key: MARIADB_ROOT_PASSWORD
         ports:
         - containerPort: 3306
         volumeMounts:
