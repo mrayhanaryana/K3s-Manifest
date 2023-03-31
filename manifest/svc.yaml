@@ -6,9 +6,9 @@ spec:
   selector:
     app: mariadb
   ports:
-    - name: mariadb
-      port: 3306
-      targetPort: 3306
+  - name: mariadb
+    port: 3306
+    targetPort: 3306
   clusterIP: None
 
 
@@ -21,12 +21,15 @@ metadata:
     app: moodle
   name: moodle
 spec:
+  type: LoadBalancer
   ports:
   - port: 80
     protocol: TCP
     targetPort: 80
+    name: http
+  - port: 443
+    protocol: TCP
+    targetPort: 443
+    name: https
   selector:
     app: moodle
-  type: LoadBalancer
-status:
-  loadBalancer: {}

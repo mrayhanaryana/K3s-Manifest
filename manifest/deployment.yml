@@ -13,35 +13,47 @@ spec:
         app: moodle
     spec:
       containers:
-        - name: moodle
-          image: bitnami/moodle:latest
-          ports:
-            - containerPort: 80
-          resources:
-            requests:
-              memory: "500Mi"
-              cpu: "0.5"
-            limits:
-              memory: "1Gi"
-              cpu: "1"
-          env:
-            - name: MOODLE_DATABASE_TYPE
-              value: "mysqli"
-            - name: MOODLE_DATABASE_HOST
-              value: "mariadb"
-            - name: MOODLE_DATABASE_NAME
-              value: "bitnami_moodle"
-            - name: MOODLE_DATABASE_USER
-              value: "moodle"
-            - name: MOODLE_DATABASE_PASSWORD
-              value: "moodle"
-          volumeMounts:
-            - name: moodle-data
-              mountPath: /bitnami/moodle
-      volumes:
+      - name: moodle
+        image: bitnami/moodle:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "0.5"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+        env:
+        - name: MOODLE_DATABASE_TYPE
+          value: "mariadb"
+        - name: MOODLE_DATABASE_HOST
+          value: "mariadb"
+        - name: MOODLE_DATABASE_NAME
+          value: "bitnami_moodle"
+        - name: MOODLE_DATABASE_USER
+          value: "moodle"
+        - name: MOODLE_DATABASE_PASSWORD
+          value: "moodle"
+        - name: MOODLE_DATABASE_PORT_NUMBER
+          value: "3306"
+        - name: APACHE_HTTPS_PORT_NUMBER
+          value: "443"
+        - name: APACHE_HTTP_PORT_NUMBER
+          value: "80"
+        - name: BITNAMI_DEBUG
+          value: "false"
+        - name: MOODLE_SKIP_BOOTSTRAP
+          value: "no"
+        - name: MOODLE_USERNAME
+          value: "admin"
+        volumeMounts:
         - name: moodle-data
-          persistentVolumeClaim:
-            claimName: moodle-pvc
+          mountPath: /bitnami/moodle
+      volumes:
+      - name: moodle-data
+        persistentVolumeClaim:
+          claimName: moodle-pvc
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -58,31 +70,31 @@ spec:
         app: mariadb
     spec:
       containers:
-        - name: mariadb
-          image: mariadb:latest
-          resources:
-            requests:
-              memory: "556Mi"
-              cpu: "0.5"
-            limits:
-              memory: "1Gi"
-              cpu: "1"
-          env:
-            - name: MYSQL_ROOT_PASSWORD
-              value: "root"
-            - name: MYSQL_DATABASE
-              value: "bitnami_moodle"
-            - name: MYSQL_USER
-              value: "moodle"
-            - name: MYSQL_PASSWORD
-              value: "moodle"
-          ports:
-            - containerPort: 3306
-          volumeMounts:
-            - name: mariadb-data
-              mountPath: /var/lib/mysql
-      volumes:
+      - name: mariadb
+        image: mariadb:latest
+        resources:
+          requests:
+            memory: "556Mi"
+            cpu: "0.5"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+        env:
+        - name: MARIADB_DATABASE
+          value: "bitnami_moodle"
+        - name: MARIADB_USER
+          value: "moodle"
+        - name: MARIADB_PASSWORD
+          value: "moodle"
+        - name: MARIADB_ROOT_PASSWORD
+          value: "moodle"
+        ports:
+        - containerPort: 3306
+        volumeMounts:
         - name: mariadb-data
-          persistentVolumeClaim:
-            claimName: mariadb-pvc
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mariadb-data
+        persistentVolumeClaim:
+          claimName: mariadb-pvc
 
