@@ -1,0 +1,9 @@
+---
+- hosts: worker
+  become: true
+  vars:
+    k3s_token: rayhan
+    k3s_url: https://172.20.0.57:6443
+  tasks:
+  - name: Install k3s worker
+    shell: curl -sfL https://get.k3s.io | K3S_URL={{ k3s_url }} K3S_TOKEN={{ k3s_token }} sh -s - --node-label 'node_type=worker' --kubelet-arg 'config=/etc/rancher/k3s/kubelet.config' --kube-proxy-arg 'metrics-bind-address=0.0.0.0'
